@@ -17,7 +17,7 @@ error InsufficientFunds(uint256 cost, uint256 sent);
 /// @title Membership Token
 /// @author GoldmanDAO
 /// @dev Note that mint price and Token URI are updateable
-contract MembershiptToken is ERC721, Ownable {
+contract MembershipToken is ERC721, Ownable {
   /// @dev Base URI
     string private internalTokenURI;
 
