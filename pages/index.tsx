@@ -40,7 +40,8 @@ export default function Home() {
   const claimToken = async () => {
     setClaiming(true);
     let Contract = new web3.eth.Contract(MembershipToken.abi, '0x5FbDB2315678afecb367f032d93F642f64180aa3');
-    await Contract.methods.mintCollectible().send({ from: account });
+    let costPerMint = Web3.utils.toWei("0.07", "ether");
+    await Contract.methods.mint(account).send({ from: account, value: costPerMint });
     setClaiming(false);
     setClaimed(true);
   }
@@ -52,16 +53,17 @@ export default function Home() {
         setWeb3(new Web3(provider));
         let web3: any = new Web3(provider);
         let chain = await web3.eth.getChainId();
+        console.log("Connected?")
 
         let Contract = new web3.eth.Contract(MembershipToken.abi, '0x5FbDB2315678afecb367f032d93F642f64180aa3');
         let accounts = await web3.eth.getAccounts()
-        let balance = await Contract.methods.hasBalance().call({ from: accounts[0] })
-        let minted = await Contract.methods.minted(accounts[0]).call({ from: accounts[0] })
+        // let balance = await Contract.methods.hasBalance().call({ from: accounts[0] })
+        // let minted = await Contract.methods.minted(accounts[0]).call({ from: accounts[0] })
 
         setAccount(accounts[0]);
         setChainId(chain);
-        setHasBalance(balance)
-        setHasMinted(minted)
+        // setHasBalance(balance)
+        // setHasMinted(minted)
       }
     } catch (err) {
       console.log('Err: ', err);
@@ -79,8 +81,8 @@ export default function Home() {
       return <h4 className={[styles.win, styles.tada].join(' ')}>Mint claimed!</h4>
     } else if (account === '') {
       return <button className={styles.btn} onClick={connect} >Connect Wallet </button>
-    } else if (chainId !== 137) {
-      return <h5 className={styles.description}> Please connect to the Ethereum Network</h5>
+    } else if (chainId !== 1337) {
+      return <h5 className={styles.description}>Please connect to the Ethereum Network</h5>
     } else {
       return <button className={styles.btn} onClick={claimToken} >Mint Membership NFT</button>
     }
