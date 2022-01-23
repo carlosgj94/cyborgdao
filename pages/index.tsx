@@ -22,6 +22,7 @@ export default function Home() {
   let [web3, setWeb3] = useState<any>({});
   let [account, setAccount] = useState('');
   let [chainId, setChainId] = useState(0);
+  let [balance, setBalance] = useState(0);
   let [hasBalance, setHasBalance] = useState(false);
   let [hasMinted, setHasMinted] = useState(true);
   let [claimed, setClaimed] = useState(false);
@@ -88,6 +89,14 @@ export default function Home() {
     }
   }
 
+  const showBalance = () => {
+    if(balance === 0) {
+      return 'Holder, claim your CyborgDAO membership'
+    } else {
+      return `Proud holder of ${balance} memberships. You can claim more below.`
+    }
+  }
+
   useEffect(() => {
     let mintStatus = async () => {
       // let web3: any = new Web3(`https://mainnet.infura.io/v3/${process.env.NEXT_PUBLIC_INFURA}`);
@@ -95,6 +104,13 @@ export default function Home() {
 
       let Contract = new web3.eth.Contract(MembershipToken.abi, '0x5FbDB2315678afecb367f032d93F642f64180aa3');
       let totalMinted = await Contract.methods.tokenCount().call()
+
+      let accounts = await web3.eth.getAccounts();
+
+      let balance = await Contract.methods.balanceOf(accounts[0]).call();
+
+      setBalance(balance);
+
       if (totalMinted > 999) setMintFinished(true);
     }
 
@@ -117,7 +133,7 @@ export default function Home() {
           <Image src={nftImage} className={styles.logo} alt="logo" />
         </div>
         <h5 className={[styles.description, styles.descriptionSize].join(' ')}>
-          Holder, claim your CyborgDAO membership
+          {showBalance()}
         </h5>
         {bottomButton()}
       </main>
