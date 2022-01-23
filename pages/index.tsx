@@ -7,7 +7,7 @@ import nftImage from '../public/nft-w-frame.png'
 import Web3 from "web3";
 import Web3Modal from "web3modal";
 import WalletConnectProvider from "@walletconnect/web3-provider";
-import MembershipToken from "../artifacts/contracts/MembershipToken.sol/MembershiptToken.json";
+import MembershipToken from "../artifacts/contracts/MembershipToken.sol/MembershipToken.json";
 
 const providerOptions = {
   walletconnect: {
@@ -39,7 +39,7 @@ export default function Home() {
 
   const claimToken = async () => {
     setClaiming(true);
-    let Contract = new web3.eth.Contract(MembershipToken.abi, '0xB4D21CAF1cc3DAdec5EEcf753F5fc23094DDFb65');
+    let Contract = new web3.eth.Contract(MembershipToken.abi, '0x5FbDB2315678afecb367f032d93F642f64180aa3');
     await Contract.methods.mintCollectible().send({ from: account });
     setClaiming(false);
     setClaimed(true);
@@ -53,7 +53,7 @@ export default function Home() {
         let web3: any = new Web3(provider);
         let chain = await web3.eth.getChainId();
 
-        let Contract = new web3.eth.Contract(MembershipToken.abi, '0xB4D21CAF1cc3DAdec5EEcf753F5fc23094DDFb65');
+        let Contract = new web3.eth.Contract(MembershipToken.abi, '0x5FbDB2315678afecb367f032d93F642f64180aa3');
         let accounts = await web3.eth.getAccounts()
         let balance = await Contract.methods.hasBalance().call({ from: accounts[0] })
         let minted = await Contract.methods.minted(accounts[0]).call({ from: accounts[0] })
@@ -70,8 +70,8 @@ export default function Home() {
   const bottomButton = () => {
     if (mintFinished) {
       return (<h5 className={styles.description}>
-        All 1000 memberships have been minted, 
-        </h5>
+        All 1000 memberships have been minted,
+      </h5>
       )
     } else if (claiming) {
       return <h5 className={styles.description}>NFT being claimed...</h5>
@@ -88,10 +88,11 @@ export default function Home() {
 
   useEffect(() => {
     let mintStatus = async () => {
-      let web3: any = new Web3(`https://mainnet.infura.io/v3/${process.env.NEXT_PUBLIC_INFURA}`);
+      // let web3: any = new Web3(`https://mainnet.infura.io/v3/${process.env.NEXT_PUBLIC_INFURA}`);
+      let web3: any = new Web3(`http://localhost:8545`);
 
-      let Contract = new web3.eth.Contract(MembershipToken.abi, '0xB4D21CAF1cc3DAdec5EEcf753F5fc23094DDFb65');
-      let totalMinted = await Contract.methods.tokenCounter().call()
+      let Contract = new web3.eth.Contract(MembershipToken.abi, '0x5FbDB2315678afecb367f032d93F642f64180aa3');
+      let totalMinted = await Contract.methods.tokenCount().call()
       if (totalMinted > 999) setMintFinished(true);
     }
 
@@ -108,13 +109,11 @@ export default function Home() {
       </Head>
 
       <main className={styles.header}>
-        <h1 className={styles.title}>Bankrunner</h1>
+        <h1 className={styles.title}>CyborgDAO</h1>
 
-        <a href="https://opensea.io/collection/bankrunner-yf94gwllm8" target="_blank" rel="noreferrer">
-          <div className={styles.imageWrapper}>
-            <Image src={nftImage} className={styles.logo} alt="logo" />
-          </div>
-        </a>
+        <div className={styles.imageWrapper}>
+          <Image src={nftImage} className={styles.logo} alt="logo" />
+        </div>
         <h5 className={[styles.description, styles.descriptionSize].join(' ')}>
           Holder, claim your CyborgDAO membership
         </h5>
