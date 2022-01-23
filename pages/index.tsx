@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Head from 'next/head'
 import Image from 'next/image'
 import styles from '../styles/Home.module.css'
-import nftImage from '../public/nft-w-frame.png'
+import nftImage from '../public/cyberpepe.png'
 
 import Web3 from "web3";
 import Web3Modal from "web3modal";
@@ -100,7 +100,7 @@ export default function Home() {
     if(balance === 0) {
       return 'Holder, claim your CyborgDAO membership'
     } else {
-      return `Proud holder of ${balance} memberships. You can claim more below.`
+      return <p>Proud holder of {balance} memberships.<br/>You can claim more below.</p>
     }
   }
 
@@ -128,13 +128,13 @@ export default function Home() {
   return (
     <div className={styles.container}>
       <Head>
-        <title>Bank Runner</title>
+        <title>CyborgDAO Mint</title>
         <meta name="description" content="Claim your CyborgDAO memberhip NFT and join the futuristic elite hoarding the top Solarpunk NFT's." />
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
       <main className={styles.header}>
-        <h1 className={styles.title}>CyborgDAO</h1>
+        <h1 className={styles.title}>CYBORG DAO</h1>
 
         <div className={styles.imageWrapper}>
           <Image src={nftImage} className={styles.logo} alt="logo" />

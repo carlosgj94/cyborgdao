@@ -1,4 +1,14 @@
-@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap');
+
+@font-face {
+    font-family: 'BigNoodle';
+    src: url('big_noodle_titling.ttf') format('truetype');
+}
+
+:root {
+    --cyberyellow: #f1e44c;
+    --cyberblue: #001ad2;
+}
 
 html,
 body {
@@ -6,7 +16,12 @@ body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
     Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
-  font-family: 'Press Start 2P', cursive;
+  font-family: 'Roboto Mono';
+}
+
+h1 {
+  font-family: 'BigNoodle';
+  color: var(--cyberyellow);
 }
 
 a {

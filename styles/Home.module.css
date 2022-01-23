@@ -1,5 +1,6 @@
 .container {
-  background-image: url('/pattern.jpg');
+  background: rgb(2,0,36);
+  background: linear-gradient(0deg, rgba(2,0,36,1) 60%, rgba(0,26,210,1) 100%);
   text-align: center;
 }
 
@@ -9,7 +10,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
+  font-size: calc(40px + 2vmin);
   color: white;
 }
 
@@ -19,7 +20,7 @@
 
 .description {
   font-size: x-large;
-  text-shadow: 0 0 6px #000000, 0 5px 15px #FECB33;
+  text-shadow: 0 0 5px #000000, 0 0 10px var(--cyberblue);
 }
 
 .opensea {
@@ -29,7 +30,7 @@
 }
 
 .win {
-  text-shadow: 0 0 6px #000000, 0 5px 19px #00FF00 !important;
+  text-shadow: 0 0 6px #000000, 0 5px 19px var(--cyberyellow) !important;
 }
 
 .description-size {
@@ -98,26 +99,24 @@
 }
 
 .btn {
-  background: #881400;
-  border-bottom: 6px inset rgba(0, 0, 0, .5);
-  border-left: 6px inset rgba(0, 0, 0, .5);
-  border-right: 6px inset rgba(255, 255, 255, .5);
-  border-top: 6px inset rgba(255, 255, 255, .5);
-  box-sizing: border-box;
+  background: var(--cyberblue);
   color: white;
   cursor: pointer;
   display: inline-block;
   font-size: 2.2rem;
+  border: none;
   margin: 1rem;
   min-width: 200px;
-  padding: .5rem;
+  padding: .5rem 2rem;
   text-transform: uppercase;
   width: auto;
-  
+  font-family: 'BigNoodle';
 }
+
 .btn:focus,
 .btn:hover {
-    background: #A81000;
+    background: var(--cyberyellow);
+    color: var(--cyberblue);
   }
 .tada {
   -webkit-animation-name: tada;
