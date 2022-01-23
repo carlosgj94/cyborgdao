@@ -42,9 +42,16 @@ export default function Home() {
     setClaiming(true);
     let Contract = new web3.eth.Contract(MembershipToken.abi, '0x5FbDB2315678afecb367f032d93F642f64180aa3');
     let costPerMint = Web3.utils.toWei("0.07", "ether");
-    await Contract.methods.mint(account).send({ from: account, value: costPerMint });
-    setClaiming(false);
-    setClaimed(true);
+    await Contract.methods.mint(account).send({ from: account, value: costPerMint })
+    .on("confirmation", function(receipt: Object){ 
+        console.log(receipt);
+        setClaimed(true);
+        setClaiming(false);
+    })
+    .on("error", function(error: Error) {
+        console.log(error);
+        setClaiming(false);
+    });
   }
 
   const connect = async () => {
