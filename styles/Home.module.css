@@ -1,7 +1,9 @@
 .container {
   background: rgb(2,0,36);
-  background: linear-gradient(0deg, rgba(2,0,36,1) 60%, rgba(0,26,210,1) 100%);
+  background-image: url("../public/background.svg");
+  background-size: cover;
   text-align: center;
+  padding: 3vmin 0;
 }
 
 .header {
@@ -10,8 +12,49 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: calc(40px + 2vmin);
+  font-size: calc(25px + 2vmin);
   color: white;
+}
+
+.title {
+  display: flex;
+  flex-flow: column;
+  font-family: 'BigNoodle', sans-serif;
+  color: var(--cyberyellow);
+}
+
+.title a {
+  text-align: right;
+  color: white;
+}
+
+.title h1 {
+  margin-block-start: unset;
+}
+
+.borders {
+    position: fixed;
+    left: 0%;
+    top: 0%;
+    right: 0%;
+    bottom: 0%;
+    z-index: 1;
+    margin: 18px;
+    border-style: dashed solid;
+    border-width: 4px 2px;
+    border-color: #fff;
+    border-radius: 0px;
+    mix-blend-mode: difference;
+}
+
+.borders._1 {
+    display: block;
+}
+
+.borders._2 {
+    position: absolute;
+    border-style: solid;
+    border-width: 1px;
 }
 
 .imageWrapper div:first-child {
@@ -57,7 +100,7 @@
 }
 .btn:hover {
   /* Start the shake animation and make the animation last for 0.5 seconds */
-  animation: shake 0.5s;
+  animation: shake 1s;
   /* When the animation is finished, start again */
   animation-iteration-count: infinite;
 }
@@ -99,9 +142,10 @@
 }
 
 .btn {
+  z-index: 1;
+  position: relative;
   background: var(--cyberblue);
   color: white;
-  cursor: pointer;
   display: inline-block;
   font-size: 2.2rem;
   border: none;
@@ -113,11 +157,34 @@
   font-family: 'BigNoodle';
 }
 
+.btn::after, .btn::before {
+  border: 2px solid var(--cyberblue);
+  content: "";
+  position: absolute;
+  z-index: -1;
+  width: calc(100% - 4px);
+  height: calc(100% - 4px);
+  left: 0;
+  bottom: 0;
+  transition: transform 0.3s ease, border-color 0.3s ease;
+}
+
 .btn:focus,
 .btn:hover {
     background: var(--cyberyellow);
     color: var(--cyberblue);
-  }
+}
+
+.btn:hover::after {
+    border-color: var(--cyberyellow);
+    transform: translate(-5px, -5px);
+}
+
+.btn:hover::before {
+    border-color: var(--cyberyellow);
+    transform: translate(5px, 5px);
+}
+
 .tada {
   -webkit-animation-name: tada;
   animation-name: tada;
@@ -173,3 +240,23 @@
   }
 }
 
+@keyframes rotating {
+  from {
+    -ms-transform: rotateY(0deg);
+    -moz-transform: rotateY(0deg);
+    -webkit-transform: rotateY(0deg);
+    -o-transform: rotateY(0deg);
+    transform: rotateY(0deg);
+  }
+  to {
+    -ms-transform: rotateY(360deg);
+    -moz-transform: rotateY(360deg);
+    -webkit-transform: rotateY(360deg);
+    -o-transform: rotateY(360deg);
+    transform: rotateY(360deg);
+  }
+}
+
+.card {
+  animation: rotating 6s linear infinite;
+}

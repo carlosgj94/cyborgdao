@@ -80,27 +80,27 @@ export default function Home() {
   const bottomButton = () => {
     if (mintFinished) {
       return (<h5 className={styles.description}>
-        All 1000 memberships have been minted,
+        All 1000 turing keys have been minted,
       </h5>
       )
     } else if (claiming) {
-      return <h5 className={styles.description}>NFT being claimed...</h5>
+      return <h5 className={styles.description}>Key being claimed...</h5>
     } if (claimed) {
-      return <h4 className={[styles.win, styles.tada].join(' ')}>Mint claimed!</h4>
+      return <h4 className={[styles.win, styles.tada].join(' ')}>Key minted!</h4>
     } else if (account === '') {
       return <button className={styles.btn} onClick={connect} >Connect Wallet </button>
     } else if (chainId !== 1337) {
       return <h5 className={styles.description}>Please connect to the Ethereum Network</h5>
     } else {
-      return <button className={styles.btn} onClick={claimToken} >Mint Membership NFT</button>
+      return <button className={styles.btn} onClick={claimToken} >Mint Turing Keys</button>
     }
   }
 
   const showBalance = () => {
-    if(balance === 0) {
-      return 'Holder, claim your CyborgDAO membership'
+    if (balance == 0) {
+      return 'Mint your turing keys'
     } else {
-      return <p>Proud holder of {balance} memberships.<br/>You can claim more below.</p>
+      return <p>Proud owner of {balance} keys.<br/>You can mint more below.</p>
     }
   }
 
@@ -128,16 +128,20 @@ export default function Home() {
   return (
     <div className={styles.container}>
       <Head>
-        <title>CyborgDAO Mint</title>
-        <meta name="description" content="Claim your CyborgDAO memberhip NFT and join the futuristic elite hoarding the top Solarpunk NFT's." />
+        <title>Turing Keys Mint</title>
+        <meta name="description" content="Mint your Turing Keys." />
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
       <main className={styles.header}>
-        <h1 className={styles.title}>CYBORG DAO</h1>
+        <div className={styles.borders}></div>
+        <div className={styles.title}>
+            <a>Cyborg DAO</a>
+            <h1>Turing Keys</h1>
+        </div>
 
         <div className={styles.imageWrapper}>
-          <Image src={nftImage} className={styles.logo} alt="logo" />
+          <Image src={nftImage} className={styles.card} alt="logo" />
         </div>
         <h5 className={[styles.description, styles.descriptionSize].join(' ')}>
           {showBalance()}
