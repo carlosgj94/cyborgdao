@@ -16,6 +16,12 @@
   color: white;
 }
 
+.contents {
+  max-width: 85%;
+  position: relative;
+  z-index: 10;
+}
+
 .title {
   display: flex;
   flex-flow: column;
@@ -33,6 +39,7 @@
 }
 
 .borders {
+    pointer-events: none;
     position: fixed;
     left: 0%;
     top: 0%;
@@ -58,7 +65,13 @@
 }
 
 .imageWrapper div:first-child {
-  width: 50vmin;
+  max-width: 50vmin;
+  animation: exposition 4s linear infinite;
+}
+
+.imageWrapper img {
+    height: auto;
+    width: auto;
 }
 
 .description {
@@ -81,23 +94,7 @@
   padding-top: 10px;
   padding-bottom: 10px;
 }
-@media only screen and (max-width: 600px) {
-  .description {
-    width: 98%;
-  }
-}
 
-@media only screen and (max-width: 900px) {
-  .description {
-    width: 88%;
-  }
-}
-
-@media only screen and (max-width: 1200px) {
-  .description {
-    width: 78%;
-  }
-}
 .btn:hover {
   /* Start the shake animation and make the animation last for 0.5 seconds */
   animation: shake 1s;
@@ -142,7 +139,6 @@
 }
 
 .btn {
-  z-index: 1;
   position: relative;
   background: var(--cyberblue);
   color: white;
@@ -240,13 +236,23 @@
   }
 }
 
-@keyframes rotating {
+@keyframes exposition {
   from {
     -ms-transform: rotateY(0deg);
     -moz-transform: rotateY(0deg);
     -webkit-transform: rotateY(0deg);
     -o-transform: rotateY(0deg);
     transform: rotateY(0deg);
+  }
+  0% {
+	box-shadow: 0 5px 15px 0px rgba(0,0,0,0.6);
+  }
+  50% {
+	box-shadow: 0 25px 15px 0px rgba(0,0,0,0.2);
+	transform: translatey(-10px);
+  }
+  100% {
+	box-shadow: 0 5px 15px 0px rgba(0,0,0,0.6);
   }
   to {
     -ms-transform: rotateY(360deg);
@@ -255,8 +261,4 @@
     -o-transform: rotateY(360deg);
     transform: rotateY(360deg);
   }
-}
-
-.card {
-  animation: rotating 6s linear infinite;
 }

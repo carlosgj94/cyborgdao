@@ -6,6 +6,7 @@ import nftImage from '../public/cyberpepe.png'
 
 import Web3 from "web3";
 import Web3Modal from "web3modal";
+import HTMLReactParser from 'html-react-parser';
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import MembershipToken from "../artifacts/contracts/MembershipToken.sol/MembershipToken.json";
 
@@ -98,9 +99,9 @@ export default function Home() {
 
   const showBalance = () => {
     if (balance == 0) {
-      return 'Mint your turing keys'
+      return 'Mint your <a class="type-yellow">Turing Keys</a>'
     } else {
-      return <p>Proud owner of {balance} keys.<br/>You can mint more below.</p>
+      return `Hello cyborg!<br/>You are already a proud owner of <a class="type-yellow">${balance}</a> keys.<br/>You can mint more below.`
     }
   }
 
@@ -134,19 +135,21 @@ export default function Home() {
       </Head>
 
       <main className={styles.header}>
-        <div className={styles.borders}></div>
+        <div className={styles.contents}>
         <div className={styles.title}>
             <a>Cyborg DAO</a>
             <h1>Turing Keys</h1>
         </div>
 
         <div className={styles.imageWrapper}>
-          <Image src={nftImage} className={styles.card} alt="logo" />
+          <Image src={nftImage} className={styles.nftimage} alt="NFT image" />
         </div>
         <h5 className={[styles.description, styles.descriptionSize].join(' ')}>
-          {showBalance()}
+          { HTMLReactParser(showBalance()) }
         </h5>
         {bottomButton()}
+        </div>
+        <div className={styles.borders}></div>
       </main>
 
       <footer className={styles.footer}>
