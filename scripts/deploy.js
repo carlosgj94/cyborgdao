@@ -14,12 +14,12 @@ async function main() {
   // await hre.run('compile');
 
   // We get the contract to deploy
-  const MembershipToken = await hre.ethers.getContractFactory("MembershipToken");
-  const membershipToken = await MembershipToken.deploy("hello");
+  const TuringKey = await hre.ethers.getContractFactory("TuringKey");
+  const turingKey = await TuringKey.deploy("hello");
 
-  await membershipToken.deployed();
+  await turingKey.deployed();
 
-  console.log("MembershipToken deployed to:", membershipToken.address);
+  console.log("TuringKey deployed to:", turingKey.address);
 }
 
 // We recommend this pattern to be able to use async/await everywhere

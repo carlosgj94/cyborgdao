@@ -8,7 +8,7 @@ import Web3 from "web3";
 import Web3Modal from "web3modal";
 import HTMLReactParser from 'html-react-parser';
 import WalletConnectProvider from "@walletconnect/web3-provider";
-import MembershipToken from "../artifacts/contracts/MembershipToken.sol/MembershipToken.json";
+import TuringKey from "../artifacts/contracts/TuringKey.sol/TuringKey.json";
 
 const providerOptions = {
   walletconnect: {
@@ -41,8 +41,8 @@ export default function Home() {
 
   const claimToken = async () => {
     setClaiming(true);
-    let Contract = new web3.eth.Contract(MembershipToken.abi, '0x5FbDB2315678afecb367f032d93F642f64180aa3');
-    let costPerMint = Web3.utils.toWei("0.07", "ether");
+    let Contract = new web3.eth.Contract(TuringKey.abi, '0x5FbDB2315678afecb367f032d93F642f64180aa3');
+    let costPerMint = Web3.utils.toWei("0.5", "ether");
     await Contract.methods.mint(account).send({ from: account, value: costPerMint })
     .on("confirmation", function(receipt: Object){ 
         console.log(receipt);
@@ -64,7 +64,7 @@ export default function Home() {
         let chain = await web3.eth.getChainId();
         console.log("Connected?")
 
-        let Contract = new web3.eth.Contract(MembershipToken.abi, '0x5FbDB2315678afecb367f032d93F642f64180aa3');
+        let Contract = new web3.eth.Contract(TuringKey.abi, '0x5FbDB2315678afecb367f032d93F642f64180aa3');
         let accounts = await web3.eth.getAccounts()
         // let balance = await Contract.methods.hasBalance().call({ from: accounts[0] })
         // let minted = await Contract.methods.minted(accounts[0]).call({ from: accounts[0] })
@@ -110,7 +110,7 @@ export default function Home() {
       // let web3: any = new Web3(`https://mainnet.infura.io/v3/${process.env.NEXT_PUBLIC_INFURA}`);
       let web3: any = new Web3(`http://localhost:8545`);
 
-      let Contract = new web3.eth.Contract(MembershipToken.abi, '0x5FbDB2315678afecb367f032d93F642f64180aa3');
+      let Contract = new web3.eth.Contract(TuringKey.abi, '0x5FbDB2315678afecb367f032d93F642f64180aa3');
       let totalMinted = await Contract.methods.tokenCount().call()
 
       let accounts = await web3.eth.getAccounts();

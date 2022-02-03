@@ -14,10 +14,10 @@ error InsufficientTokensRemain();
 error InsufficientFunds(uint256 cost, uint256 sent);
 
 
-/// @title Membership Token
+/// @title Turing Key
 /// @author GoldmanDAO
 /// @dev Note that mint price and Token URI are updateable
-contract MembershipToken is ERC721, Ownable {
+contract TuringKey is ERC721, Ownable {
   /// @dev Base URI
     string private internalTokenURI;
 
@@ -25,10 +25,10 @@ contract MembershipToken is ERC721, Ownable {
     uint256 public tokenCount;
 
     /// @notice The maximum number of nfts to mint
-    uint256 public maximumTokens = 2000;
+    uint256 public maximumTokens = 969;
 
     /// @notice Cost to mint a token
-    uint256 public publicSalePrice = 0.07 ether;
+    uint256 public publicSalePrice = 0.5 ether;
 
     //////////////////////////////////////////////////
     //                  MODIFIER                    //
@@ -50,7 +50,7 @@ contract MembershipToken is ERC721, Ownable {
     //////////////////////////////////////////////////
 
     /// @dev Sets the ERC721 Metadata and OpenSea Proxy Registry Address
-    constructor(string memory _tokenURI) ERC721("CyborgDAO Membership", "CYBR") {
+    constructor(string memory _tokenURI) ERC721("Turing Key", "TKEY") {
       internalTokenURI = _tokenURI;
     }
 
@@ -156,21 +156,21 @@ contract MembershipToken is ERC721, Ownable {
     //                 ROYALTIES                    //
     //////////////////////////////////////////////////
     // @dev Support for EIP 2981 Interface by overriding erc165 supportsInterface
-    function supportsInterface(bytes4 interfaceId) public pure virtual override returns (bool) {
-        return
-            interfaceId == 0x01ffc9a7 || // ERC165 Interface ID for ERC165
-            interfaceId == 0x80ac58cd || // ERC165 Interface ID for ERC721
-            interfaceId == 0x5b5e139f || // ERC165 Interface ID for ERC721Metadata
-            interfaceId == 0x2a55205a;  // ERC165 Interface ID for ERC2981
-    }
+    // function supportsInterface(bytes4 interfaceId) public pure virtual override returns (bool) {
+    //     return
+    //         interfaceId == 0x01ffc9a7 || // ERC165 Interface ID for ERC165
+    //         interfaceId == 0x80ac58cd || // ERC165 Interface ID for ERC721
+    //         interfaceId == 0x5b5e139f || // ERC165 Interface ID for ERC721Metadata
+    //         interfaceId == 0x2a55205a;  // ERC165 Interface ID for ERC2981
+    // }
 
     /// @dev Royalter information
-    function royaltyInfo(uint256 tokenId, uint256 salePrice)
-        external
-        view
-        returns (address receiver, uint256 royaltyAmount)
-    {
-        receiver = address(this);
-        royaltyAmount = (salePrice * 5) / 100;
-    }
+    // function royaltyInfo(uint256 tokenId, uint256 salePrice)
+    //     external
+    //     view
+    //     returns (address receiver, uint256 royaltyAmount)
+    // {
+    //     receiver = address(this);
+    //     royaltyAmount = (salePrice * 5) / 100;
+    // }
 }
