@@ -3,7 +3,7 @@ pragma solidity ^0.8.11;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
 import '@rari-capital/solmate/src/tokens/ERC721.sol';
-import {IERC20} from "./interfaces/IERC20.sol";
+import {IERC20} from "./IERC20.sol";
 
 /// @notice Too few tokens remain
 error InsufficientTokensRemain();
@@ -13,6 +13,15 @@ error InsufficientTokensRemain();
 /// @param sent The amount of ether sent to this contract
 error InsufficientFunds(uint256 cost, uint256 sent);
 
+/// @notice Supply send to update is lower than the current mints count
+/// @param supply Amount sent to update
+/// @param tokenCount Current minst amount
+error SupplyLowerThanTokenCount(uint256 supply, uint256 tokenCount);
+
+/// @notice Supply send to update is lower than the current mints count
+/// @param supply Amount sent to update
+/// @param absoluteMaximumTokens hardcoded maximum number of tokens
+error SupplyHigherThanAbsoluteMaximumTokens(uint256 supply, uint256 absoluteMaximumTokens);
 
 /// @title Turing Key
 /// @author GoldmanDAO
@@ -24,8 +33,11 @@ contract TuringKey is ERC721, Ownable {
     /// @dev Number of tokens
     uint256 public tokenCount;
 
-    /// @notice The maximum number of nfts to mint
-    uint256 public maximumTokens = 969;
+    /// @notice The maximum number of nfts to mint, not updateable
+    uint256 public constant ABSOLUTE_MAXIMUM_TOKENS = 969;
+
+    /// @notice The actual supply of nfts. Can be updated by the owner
+    uint256 public currentSupply = 200;
 
     /// @notice Cost to mint a token
     uint256 public publicSalePrice = 0.5 ether;
@@ -36,7 +48,7 @@ contract TuringKey is ERC721, Ownable {
 
     /// @dev Checks if there are enough tokens left for minting
     modifier canMint() {
-        if (tokenCount > maximumTokens) {
+        if (tokenCount > currentSupply) {
             revert InsufficientTokensRemain();
         }
          if (publicSalePrice > msg.value) {
@@ -130,9 +142,15 @@ contract TuringKey is ERC721, Ownable {
         internalTokenURI = _internalTokenURI;
     }
 
-    /// @dev Allows the owner to increment the amount of memberships to be minted
-    function incrementTokenNumber(uint256 increment) public onlyOwner {
-      maximumTokens += increment;
+    /// @dev Allows the owner to update the amount of memberships to be minted
+    function updateCurrentSupply(uint256 _supply) public onlyOwner {
+        if (_supply > ABSOLUTE_MAXIMUM_TOKENS) {
+            revert SupplyHigherThanAbsoluteMaximumTokens(_supply, ABSOLUTE_MAXIMUM_TOKENS);
+        } 
+        if (_supply < tokenCount) {
+            revert SupplyLowerThanTokenCount(_supply, tokenCount);
+        }
+        currentSupply = _supply;
     }
 
     /// @dev Allows the owner to change the prize of the membership 
