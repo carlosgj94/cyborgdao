@@ -3,7 +3,7 @@ pragma solidity ^0.8.11;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
 import '@rari-capital/solmate/src/tokens/ERC721.sol';
-import {IERC20} from "./IERC20.sol";
+import {IERC20} from "./interfaces/IERC20.sol";
 
 /// @notice Too few tokens remain
 error InsufficientTokensRemain();
