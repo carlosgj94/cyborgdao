@@ -65,7 +65,6 @@
 }
 
 .imageWrapper div:first-child {
-  max-width: 50vmin;
   animation: exposition 4s linear infinite;
 }
 
@@ -86,7 +85,7 @@
 }
 
 .win {
-  text-shadow: 0 0 6px #000000, 0 5px 19px var(--cyberyellow) !important;
+  text-shadow: 0 0 6px #000000, 0 5px 19px var(--cyberblue) !important;
 }
 
 .description-size {

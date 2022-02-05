@@ -30,7 +30,10 @@ export default function Home() {
   let [claiming, setClaiming] = useState(false);
   let [mintFinished, setMintFinished] = useState(false);
 
-  let web3Modal: any
+  let web3Modal: any;
+  let contractAddress: string = String(process.env.contractAddress);
+  let mintPrice: string = String(process.env.mintPrice);
+
   if (process.browser) {
     web3Modal = new Web3Modal({
       cacheProvider: true,
@@ -41,8 +44,8 @@ export default function Home() {
 
   const claimToken = async () => {
     setClaiming(true);
-    let Contract = new web3.eth.Contract(TuringKey.abi, '0x5FbDB2315678afecb367f032d93F642f64180aa3');
-    let costPerMint = Web3.utils.toWei("0.5", "ether");
+    let Contract = new web3.eth.Contract(TuringKey.abi, contractAddress);
+    let costPerMint = Web3.utils.toWei(mintPrice, "ether");
     await Contract.methods.mint(account).send({ from: account, value: costPerMint })
     .on("confirmation", function(receipt: Object){ 
         console.log(receipt);
@@ -64,7 +67,7 @@ export default function Home() {
         let chain = await web3.eth.getChainId();
         console.log("Connected?")
 
-        let Contract = new web3.eth.Contract(TuringKey.abi, '0x5FbDB2315678afecb367f032d93F642f64180aa3');
+        let Contract = new web3.eth.Contract(TuringKey.abi, contractAddress);
         let accounts = await web3.eth.getAccounts()
         // let balance = await Contract.methods.hasBalance().call({ from: accounts[0] })
         // let minted = await Contract.methods.minted(accounts[0]).call({ from: accounts[0] })
@@ -90,7 +93,7 @@ export default function Home() {
       return <h4 className={[styles.win, styles.tada].join(' ')}>Key minted!</h4>
     } else if (account === '') {
       return <button className={styles.btn} onClick={connect} >Connect Wallet </button>
-    } else if (chainId !== 1337) {
+    } else if (chainId !== Number(process.env.chainId)) {
       return <h5 className={styles.description}>Please connect to the Ethereum Network</h5>
     } else {
       return <button className={styles.btn} onClick={claimToken} >Mint Turing Keys</button>
@@ -107,19 +110,21 @@ export default function Home() {
 
   useEffect(() => {
     let mintStatus = async () => {
-      // let web3: any = new Web3(`https://mainnet.infura.io/v3/${process.env.NEXT_PUBLIC_INFURA}`);
-      let web3: any = new Web3(`http://localhost:8545`);
+      let web3: any = new Web3(String(process.env.NEXT_PUBLIC_INFURA));
+      let balance: number = 0
 
-      let Contract = new web3.eth.Contract(TuringKey.abi, '0x5FbDB2315678afecb367f032d93F642f64180aa3');
-      let totalMinted = await Contract.methods.tokenCount().call()
+      let Contract = new web3.eth.Contract(TuringKey.abi, contractAddress);
+      let totalMinted = await Contract.methods.tokenCount().call();
+      let currentSupply = await Contract.methods.currentSupply().call();
 
       let accounts = await web3.eth.getAccounts();
-
-      let balance = await Contract.methods.balanceOf(accounts[0]).call();
+      if (accounts.length != 0) {
+        balance = await Contract.methods.balanceOf(accounts[0]).call();
+      }
 
       setBalance(balance);
 
-      if (totalMinted > 999) setMintFinished(true);
+      if (totalMinted >= currentSupply) setMintFinished(true);
     }
 
     mintStatus();
@@ -142,7 +147,7 @@ export default function Home() {
         </div>
 
         <div className={styles.imageWrapper}>
-          <Image src={nftImage} className={styles.nftimage} alt="NFT image" />
+          <Image src={process.env.nftImage} width='600' height='600' layout='responsive' className={styles.nftimage} alt="NFT image" />
         </div>
         <h5 className={[styles.description, styles.descriptionSize].join(' ')}>
           { HTMLReactParser(showBalance()) }
