@@ -2,7 +2,7 @@
 
 @font-face {
     font-family: 'BigNoodle';
-    src: url('big_noodle_titling.ttf') format('truetype');
+    src: url('../public/big_noodle_titling.ttf') format('truetype');
 }
 
 :root {

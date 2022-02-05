@@ -136,7 +136,6 @@ export default function Home() {
       <Head>
         <title>Turing Keys Mint</title>
         <meta name="description" content="Mint your Turing Keys." />
-        <link rel="icon" href="/favicon.ico" />
       </Head>
 
       <main className={styles.header}>
