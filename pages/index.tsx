@@ -146,7 +146,7 @@ export default function Home() {
         </div>
 
         <div className={styles.imageWrapper}>
-          <Image src={process.env.nftImage} width='600' height='600' layout='responsive' className={styles.nftimage} alt="NFT image" />
+          <Image src={process.env.nftImage!} width='600' height='600' layout='responsive' className={styles.nftimage} alt="NFT image" />
         </div>
         <h5 className={[styles.description, styles.descriptionSize].join(' ')}>
           { HTMLReactParser(showBalance()) }
