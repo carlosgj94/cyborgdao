@@ -4,6 +4,7 @@ pragma solidity ^0.8.11;
 import "@openzeppelin/contracts/access/Ownable.sol";
 import '@rari-capital/solmate/src/tokens/ERC721.sol';
 import {IERC20} from "./interfaces/IERC20.sol";
+import {IBottoStaking} from "./interfaces/IBottoStaking.sol";
 
 /// @notice Too few tokens remain
 error InsufficientTokensRemain();
@@ -23,11 +24,22 @@ error SupplyLowerThanTokenCount(uint256 supply, uint256 tokenCount);
 /// @param absoluteMaximumTokens hardcoded maximum number of tokens
 error SupplyHigherThanAbsoluteMaximumTokens(uint256 supply, uint256 absoluteMaximumTokens);
 
+/// @notice Account trying to mint the token is not a botto staker
+/// @param user account sending the transaction
+error UserIsNotAStaker(address user);
+
+
 /// @title Turing Key
 /// @author GoldmanDAO
 /// @dev Note that mint price and Token URI are updateable
 contract TuringKey is ERC721, Ownable {
-  /// @dev Base URI
+    /// @dev BottoStaking contract
+    IBottoStaking private bottoStaking;
+
+    ///  @dev amount of time when the contract is going to be locked
+    uint256 public timelock; 
+
+    /// @dev Base URI
     string private internalTokenURI;
 
     /// @dev Number of tokens
@@ -48,6 +60,11 @@ contract TuringKey is ERC721, Ownable {
 
     /// @dev Checks if there are enough tokens left for minting
     modifier canMint() {
+        if (block.timestamp < timelock) {
+            if(bottoStaking.userStakes(msg.sender) == 0) {
+                revert UserIsNotAStaker(msg.sender);
+            }
+        }
         if (tokenCount > currentSupply) {
             revert InsufficientTokensRemain();
         }
@@ -62,8 +79,10 @@ contract TuringKey is ERC721, Ownable {
     //////////////////////////////////////////////////
 
     /// @dev Sets the ERC721 Metadata and OpenSea Proxy Registry Address
-    constructor(string memory _tokenURI) ERC721("Turing Key", "TKEY") {
+    constructor(string memory _tokenURI, IBottoStaking _bottoStaking) ERC721("Turing Key", "TKEY") {
       internalTokenURI = _tokenURI;
+      bottoStaking = _bottoStaking;
+      timelock = block.timestamp + 2 days;
     }
 
     //////////////////////////////////////////////////
