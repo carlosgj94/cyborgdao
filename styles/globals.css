@@ -6,8 +6,9 @@
 }
 
 :root {
-    --cyberyellow: #faff00;
-    --cyberblue: #0015ba;
+    --pink: #E187AC;
+    --yellow: #F7F8B6;
+    --blue: #98E0FA;
 }
 
 html,
@@ -28,5 +29,9 @@ a {
 }
 
 .type-yellow {
-    color: var(--cyberyellow);
+    color: var(--yellow);
+}
+
+.type-pink {
+    color: var(--pink);
 }
