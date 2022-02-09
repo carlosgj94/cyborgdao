@@ -44,8 +44,6 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: calc(25px + 2vmin);
-  color: white;
 }
 
 .contents {
@@ -75,8 +73,8 @@
 .balanceInfo {
   background: var(--yellow);
   box-shadow: 3px 3px var(--pink);
-  margin: 2rem 0;
-  padding: 2rem;
+  margin: 1rem 0;
+  padding: 1.4rem;
   color: black;
   font-size: large;
 }
@@ -100,12 +98,23 @@
   padding-bottom: 10px;
 }
 
-/* Title style & effects */
+.mintButtonSection {
+    margin: 0.5rem 0 0 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.balanceModSection {
+    display: flex;
+    flex-flow: column;
+}
 
 .title {
   display: flex;
   flex-flow: column;
   font-family: 'BigNoodle', sans-serif;
+  font-size: calc(25px + 2vmin);
   color: var(--yellow);
 }
 
@@ -116,8 +125,10 @@
 
 .title h1 {
   margin-block-start: unset;
+  margin-block-end: 0.3em;
   color: var(--yellow);
   text-shadow: 2px 2px var(--pink);
+  font-size: max(10vw, 80px);
 }
 
 /* Animations */
@@ -158,6 +169,11 @@
 }
 
 .btn {
+  font-family: 'BigNoodle';
+  text-transform: uppercase;
+}
+
+.btnMain {
   position: relative;
   background: var(--yellow);
   border: solid black 4px;
@@ -171,14 +187,40 @@
   font-family: 'BigNoodle';
 }
 
-.btn:hover {
+.btns {
+  background: white;
+  width: 3rem;
+  margin: 0.5rem;
+  font-size: 2rem;
+  border: solid black 2px;
+}
+
+.btnPlus:hover {
+  background: var(--pink);
+}
+
+.btnLess:hover {
+  background: var(--yellow);
+}
+
+.btn[disabled] {
+    background: lightgrey;
+    animation: none;
+}
+
+.btn[disabled]:hover {
+    animation: none;
+    background: lightgrey;
+}
+
+.btnMain:hover {
   /* Start the shake animation and make the animation last for 0.5 seconds */
   animation: shake 1s;
   /* When the animation is finished, start again */
   animation-iteration-count: infinite;
 }
 
-.btn:hover, .btn:focus {
+.btnMain:hover, .btnMain:focus {
   background: var(--pink);
 }
 

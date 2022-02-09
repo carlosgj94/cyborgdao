@@ -24,13 +24,12 @@ export default function Home() {
     let [account, setAccount] = useState('');
     let [chainId, setChainId] = useState(0);
     let [balance, setBalance] = useState(0);
-    let [hasBalance, setHasBalance] = useState(false);
-    let [hasMinted, setHasMinted] = useState(true);
-    let [claimed, setClaimed] = useState(false);
+    let [connected, setConnected] = useState(false);
     let [claiming, setClaiming] = useState(false);
-    let [mintFinished, setMintFinished] = useState(false);
+    let [mintLocked, setMintLocked] = useState(false);
     let [totalMinted, setTotalMinted] = useState(0);
     let [currentSupply, setCurrentSupply] = useState(969);
+    let [keysAmount, setKeysNumber] = useState(1);
 
     let web3Modal: any;
     let contractAddress: string = String(process.env.contractAddress);
@@ -44,16 +43,26 @@ export default function Home() {
         });
     }
 
+    const setConnection = async (account: string, chainId: number) => {
+        setAccount(account);
+        setChainId(chainId);
+        if (account && chainId === Number(process.env.chainId)) {
+            setConnected(true);
+        } else {
+            setConnected(false);
+        }
+    }
+
     const claimToken = async () => {
         setClaiming(true);
         let Contract = new web3.eth.Contract(TuringKey.abi, contractAddress);
         let costPerMint = Web3.utils.toWei(mintPrice, "ether");
-        await Contract.methods.mint(account).send({ from: account, value: costPerMint })
+        let value = Number(costPerMint) * keysAmount;
+
+        await Contract.methods.mint(account, keysAmount).send({ from: account, value: value })
             .on("confirmation", function(receipt: Object) {
                 console.log(receipt);
-                setClaimed(true);
                 setClaiming(false);
-                setBalance(balance+1);
             })
             .on("error", function(error: Error) {
                 console.log(error);
@@ -68,63 +77,98 @@ export default function Home() {
                 setWeb3(new Web3(provider));
                 let web3: any = new Web3(provider);
                 let chain = await web3.eth.getChainId();
+                let Contract = new web3.eth.Contract(TuringKey.abi, contractAddress);
                 console.log("Connected?")
 
                 let accounts = await web3.eth.getAccounts()
+                let accountBalance = await Contract.methods.balanceOf(accounts[0]).call();
 
-                setAccount(accounts[0]);
-                setChainId(chain);
+                setConnection(accounts[0], chain);
+                setBalance(accountBalance);
             }
         } catch (err) {
             console.log('Err: ', err);
+            setConnection(account, chainId);
+        }
+    }
+
+    const showMintStatus = () => {
+
+        let keyText = () => {
+            if (balance > 1) { return 'keys' } else { return 'key' }
+        };
+
+        let balanceText = () => {
+            if (connected && balance != 0) {
+                return <div> You proudly hold <a className="type-pink">{balance}</a> {keyText()}.</div>
+            }
+        }
+
+        let statusText = () => {
+            if (chainId !== Number(process.env.chainId)) {
+                return <div>Please connect to the Ethereum Network</div>
+            }
+            else if (claiming) {
+                return <div><a className="type-pink">Claiming...</a></div>
+            }
+        }
+
+        if (balanceText() || statusText()) {
+            return (<div className={styles.balanceInfo}>{balanceText()} {statusText()}</div>)
         }
     }
 
     const mintButton = () => {
-        if (mintFinished) {
-            return (
-            <div className={styles.mintStatus}>
-                All <a className="type-pink">Turing Keys</a> claimed
-            </div>
-            )
-        } else if (claiming) {
-            return <div className={styles.mintStatus}><a className="type-pink">Key</a> being claimed...</div>
-        } if (claimed) {
-            return <div className={[styles.mintStatus, styles.tada].join(' ')}>Key minted!</div>
-        } else if (account === '') {
-            return <button className={[styles.mintStatus, styles.btn].join(' ')} onClick={connect} >Connect Wallet</button>
-        } else if (chainId !== Number(process.env.chainId)) {
-            return <div className={styles.mintStatus}>Please connect to the Ethereum Network</div>
-        } else {
-            return <button className={[styles.mintStatus, styles.btn].join(' ')} onClick={claimToken} >Mint Turing Keys</button>
-        }
-    }
 
-    const showBalance = () => {
-        if (balance != 0) {
-            return <div className={[styles.balanceInfo, styles.tada].join(' ')}> You already are a proud holder of <a className="type-pink">{balance}</a> keys</div>
-        }
+        function updateKeysNumber(diff: number) {
+            let newNumber = keysAmount + diff;
+            if (0 < newNumber && newNumber <= 10) {
+                setKeysNumber(newNumber);
+            }
+        };
+
+        let buttonText = () => {
+            if (keysAmount > 1) { return 'Turing Keys' } else { return 'Turing Key' }
+        };
+
+        let buttonHTML = () => {
+            if (mintLocked) {
+                return <button className={[styles.btn, styles.btnMain].join(' ')} disabled>Mint Locked</button>
+            } else if (connected) {
+                return <button className={[styles.btn, styles.btnMain].join(' ')} onClick={claimToken} >Mint {keysAmount} {buttonText()}</button>
+            } else {
+                return <button className={[styles.btn, styles.btnMain].join(' ')} onClick={connect} >Connect Wallet</button>
+            }
+        };
+
+        return (
+            <div className={styles.mintButtonSection}>
+                {buttonHTML()}
+                <div className={styles.balanceModSection}>
+                    <button className={[styles.btns, styles.btnPlus].join(' ')} onClick={() => updateKeysNumber(1)}>+</button>
+                    <button className={[styles.btns, styles.btnLess].join(' ')} onClick={() => updateKeysNumber(-1)}>-</button>
+                </div>
+            </div>
+        );
     }
 
     useEffect(() => {
         let mintStatus = async () => {
             let web3: any = new Web3(String(process.env.NEXT_PUBLIC_INFURA));
-            let balance: number = 0
-
             let Contract = new web3.eth.Contract(TuringKey.abi, contractAddress);
+            let chain = await web3.eth.getChainId();
             let _totalMinted = await Contract.methods.tokenCount().call();
             let _currentSupply = await Contract.methods.currentSupply().call();
 
             let accounts = await web3.eth.getAccounts();
             if (accounts.length != 0) {
-                balance = await Contract.methods.balanceOf(accounts[0]).call();
+                let accountBalance = await Contract.methods.balanceOf(accounts[0]).call();
+                setBalance(accountBalance);
             }
 
-            setBalance(balance);
+            setConnection(accounts[0], chain);
             setTotalMinted(_totalMinted);
             setCurrentSupply(_currentSupply);
-
-            setMintFinished(_totalMinted >= _currentSupply);
         }
         mintStatus();
     }, []);
@@ -149,11 +193,11 @@ export default function Home() {
                             <Image src={nftImage} width='600' height='600' layout='responsive' className={styles.nftimage} alt="NFT image" />
                         </div>
                         <div className={styles.mintInfo}>
-                        {totalMinted}/{currentSupply} | 0.5 ETH
+                            {totalMinted}/{currentSupply} | 0.5 ETH
                         </div>
                         {mintButton()}
                     </div>
-                    {showBalance()}
+                    {showMintStatus()}
                 </div>
                 <div className={styles.borders}></div>
             </main>
