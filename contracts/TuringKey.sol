@@ -9,6 +9,11 @@ import {IBottoStaking} from "./interfaces/IBottoStaking.sol";
 /// @notice Too few tokens remain
 error InsufficientTokensRemain();
 
+/// @notice Balance of sender is or would be over token limit per holder
+// @param balance Token balance
+// @param limit Token limit per holder
+error SenderBalanceOverTokenLimit(uint256 balance, uint8 limit);
+
 /// @notice Not enough ether sent to mint
 /// @param cost The minimum amount of ether required to mint
 /// @param sent The amount of ether sent to this contract
@@ -45,6 +50,9 @@ contract TuringKey is ERC721, Ownable {
     /// @dev Number of tokens
     uint256 public tokenCount;
 
+    /// @notice Limit of tokens per holder
+    uint8 public constant HOLDER_TOKEN_LIMIT = 10;
+
     /// @notice The maximum number of nfts to mint, not updateable
     uint256 public constant ABSOLUTE_MAXIMUM_TOKENS = 969;
 
@@ -59,17 +67,20 @@ contract TuringKey is ERC721, Ownable {
     //////////////////////////////////////////////////
 
     /// @dev Checks if there are enough tokens left for minting
-    modifier canMint() {
+    modifier canMint(uint8 amount) {
         if (block.timestamp < timelock) {
             if(bottoStaking.userStakes(msg.sender) == 0) {
                 revert UserIsNotAStaker(msg.sender);
             }
         }
-        if (tokenCount > currentSupply) {
+        if (tokenCount + amount >= currentSupply) {
             revert InsufficientTokensRemain();
         }
-         if (publicSalePrice > msg.value) {
-            revert InsufficientFunds(publicSalePrice, msg.value);
+        if (publicSalePrice * amount > msg.value) {
+            revert InsufficientFunds(publicSalePrice * amount, msg.value);
+        }
+        if (balanceOf[msg.sender] + amount > HOLDER_TOKEN_LIMIT) {
+            revert SenderBalanceOverTokenLimit(balanceOf[msg.sender] + amount, HOLDER_TOKEN_LIMIT);
         }
         _;
     }
@@ -104,28 +115,34 @@ contract TuringKey is ERC721, Ownable {
     //                MINTING LOGIC                 //
     //////////////////////////////////////////////////
 
-    /// @notice Mint a token
+    /// @notice Mint one or more tokens
     /// @param to whom the token is being sent to
-    function mint(address to)
+    /// @param amount the amount of tokens to mint
+    function mint(address to, uint8 amount)
         public
         virtual
         payable
-        canMint() 
+        canMint(amount) 
     {
-        tokenCount++;
-        _mint(to, tokenCount);
+        for (uint8 i=0; i < amount; i++) {
+            tokenCount++;
+            _mint(to, tokenCount);
+        }
     }
 
-    /// @notice Safe mint a token
+    /// @notice Safe mint one or mont tokens
     /// @param to whom the token is being sent to
-    function safeMint(address to)
+    /// @param amount the amount of tokens to mint
+    function safeMint(address to, uint8 amount)
         public
         virtual
         payable
-        canMint()
+        canMint(amount)
     {
-        tokenCount++;
-        _safeMint(to, tokenCount);
+        for (uint8 i=0; i < amount; i++) {
+            tokenCount++;
+            _safeMint(to, tokenCount);
+        }
     }
 
     /// @notice Safe mint a token
@@ -138,7 +155,7 @@ contract TuringKey is ERC721, Ownable {
         public
         virtual
         payable
-        canMint()
+        canMint(1)
     {
         tokenCount++;
         _safeMint(to, tokenCount, data);
