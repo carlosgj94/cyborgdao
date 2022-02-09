@@ -102,7 +102,7 @@ export default function Home() {
 
     const showBalance = () => {
         if (balance != 0) {
-            return <div className={[styles.balanceInfo, styles.tada].join(' ')}> You already are a proud holder of <a class="type-pink">{balance}</a> keys</div>
+            return <div className={[styles.balanceInfo, styles.tada].join(' ')}> You already are a proud holder of <a className="type-pink">{balance}</a> keys</div>
         }
     }
 
@@ -148,7 +148,7 @@ export default function Home() {
                         <div className={styles.imageWrapper}>
                             <Image src={nftImage} width='600' height='600' layout='responsive' className={styles.nftimage} alt="NFT image" />
                         </div>
-                        <div className={[styles.mintInfo, styles.mintInfoSize].join(' ')}>
+                        <div className={styles.mintInfo}>
                         {totalMinted}/{currentSupply} | 0.5 ETH
                         </div>
                         {mintButton()}
