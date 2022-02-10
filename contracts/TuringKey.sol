@@ -66,8 +66,12 @@ contract TuringKey is ERC721, Ownable {
     //                  MODIFIER                    //
     //////////////////////////////////////////////////
 
-    /// @dev Checks if there are enough tokens left for minting
-    modifier canMint(uint8 amount) {
+    /// @dev Checks mint requirements
+    /// -> Mint in time or pre-release authorized sender
+    /// -> Enough supply
+    /// -> Balance of target address in limits
+    /// -> Value sended matches price
+    modifier canMint(address to, uint8 amount) {
         if (block.timestamp < timelock) {
             if(bottoStaking.userStakes(msg.sender) == 0) {
                 revert UserIsNotAStaker(msg.sender);
@@ -76,11 +80,11 @@ contract TuringKey is ERC721, Ownable {
         if (tokenCount + amount >= currentSupply) {
             revert InsufficientTokensRemain();
         }
+        if (balanceOf[to] + amount > HOLDER_TOKEN_LIMIT) {
+            revert SenderBalanceOverTokenLimit(balanceOf[to] + amount, HOLDER_TOKEN_LIMIT);
+        }
         if (publicSalePrice * amount > msg.value) {
             revert InsufficientFunds(publicSalePrice * amount, msg.value);
-        }
-        if (balanceOf[msg.sender] + amount > HOLDER_TOKEN_LIMIT) {
-            revert SenderBalanceOverTokenLimit(balanceOf[msg.sender] + amount, HOLDER_TOKEN_LIMIT);
         }
         _;
     }
@@ -122,7 +126,7 @@ contract TuringKey is ERC721, Ownable {
         public
         virtual
         payable
-        canMint(amount) 
+        canMint(to, amount) 
     {
         for (uint8 i=0; i < amount; i++) {
             tokenCount++;
@@ -137,7 +141,7 @@ contract TuringKey is ERC721, Ownable {
         public
         virtual
         payable
-        canMint(amount)
+        canMint(to, amount)
     {
         for (uint8 i=0; i < amount; i++) {
             tokenCount++;
@@ -150,15 +154,18 @@ contract TuringKey is ERC721, Ownable {
     /// @param data needed for the contract to be call
     function safeMint(
         address to,
+        uint8 amount,
         bytes memory data
     )
         public
         virtual
         payable
-        canMint(1)
+        canMint(to, amount)
     {
-        tokenCount++;
-        _safeMint(to, tokenCount, data);
+        for (uint8 i=0; i < amount; i++) {
+            tokenCount++;
+            _safeMint(to, tokenCount, data);
+        }
     }
 
      //////////////////////////////////////////////////
