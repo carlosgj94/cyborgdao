@@ -7,7 +7,7 @@
     top: 0%;
     right: 0%;
     bottom: 0%;
-    z-index: 1;
+    z-index: 0;
     margin: 18px;
     border-style: dashed solid;
     border-width: 4px 2px;
@@ -30,9 +30,8 @@
 /* Main Grid */
 
 .container {
-
   background: var(--blue);
-  /* background-image: url("../public/background.svg"); */
+  z-index: -1;
   background-size: cover;
   text-align: center;
   padding: 3vmin 0;
@@ -50,7 +49,7 @@
   width: 500px;
   max-width: 85%;
   position: relative;
-  z-index: 3;
+  z-index: 1;
 }
 
 .box {
