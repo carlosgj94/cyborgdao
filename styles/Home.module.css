@@ -30,11 +30,11 @@
 /* Main Grid */
 
 .container {
+  min-height: 100vh;
   background: var(--blue);
   z-index: -1;
   background-size: cover;
   text-align: center;
-  padding: 3vmin 0;
 }
 
 .header {
@@ -42,7 +42,9 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  align-content: space-between;
   justify-content: center;
+  padding: 18px;
 }
 
 .contents {
@@ -203,13 +205,13 @@
 }
 
 .btn[disabled] {
-    background: lightgrey;
+    background-color: #ffff;
     animation: none;
 }
 
 .btn[disabled]:hover {
     animation: none;
-    background: lightgrey;
+    background-color: #ffff;
 }
 
 .btnMain:hover {
