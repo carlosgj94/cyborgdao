@@ -129,7 +129,12 @@
   margin-block-end: 0.3em;
   color: var(--yellow);
   text-shadow: 2px 2px var(--pink);
-  font-size: 2.5em;
+  font-size: 7.5rem;
+}
+@media only screen and (max-width: 600px) {
+  .title h1 {
+  font-size: 4.5rem;
+  }
 }
 
 /* Animations */
