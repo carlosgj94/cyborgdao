@@ -94,8 +94,6 @@ export default function Home() {
 
     const showMintStatus = () => {
 
-        return (<div className={styles.balanceInfo}>Starts Sunday 02/13 at 11:00 pm GMT. 48h whitelist for $botto stakers.</div>)
-        /*
         let keyText = () => {
             if (balance > 1) { return 'keys' } else { return 'key' }
         };
@@ -118,7 +116,6 @@ export default function Home() {
         if (balanceText() || statusText()) {
             return (<div className={styles.balanceInfo}>{balanceText()} {statusText()}</div>)
         }
-        */
     }
 
     const mintButton = () => {
@@ -135,8 +132,6 @@ export default function Home() {
         };
 
         let buttonHTML = () => {
-            return <button className={[styles.btn, styles.btnMain].join(' ')} disabled>Mint Locked</button>
-            /*
             if (mintLocked) {
                 return <button className={[styles.btn, styles.btnMain].join(' ')} disabled>Mint Locked</button>
             } else if (connected) {
@@ -144,18 +139,15 @@ export default function Home() {
             } else {
                 return <button className={[styles.btn, styles.btnMain].join(' ')} onClick={connect} >Connect Wallet</button>
             }
-            */
         };
 
         return (
             <div className={styles.mintButtonSection}>
                 {buttonHTML()}
-                {/*
                 <div className={styles.balanceModSection}>
                     <button className={[styles.btns, styles.btnPlus].join(' ')} onClick={() => updateKeysNumber(1)}>+</button>
                     <button className={[styles.btns, styles.btnLess].join(' ')} onClick={() => updateKeysNumber(-1)}>-</button>
                 </div>
-                */}
             </div>
         );
     }

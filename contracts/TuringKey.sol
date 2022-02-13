@@ -73,7 +73,7 @@ contract TuringKey is ERC721, Ownable {
     /// -> Value sended matches price
     modifier canMint(address to, uint8 amount) {
         if (block.timestamp < timelock) {
-            if(bottoStaking.userStakes(msg.sender) == 0) {
+            if(bottoStaking.userStakes(msg.sender) == 0 || bottoStaking.userStakes(to) == 0) {
                 revert UserIsNotAStaker(msg.sender);
             }
         }
