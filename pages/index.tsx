@@ -132,10 +132,9 @@ export default function Home() {
         };
 
         let buttonHTML = () => {
-            //if (mintLocked) {
-                // return <button className={[styles.btn, styles.btnMain].join(' ')} disabled>Mint Locked</button>
-            // }
-           if (connected) {
+            if (mintLocked) {
+                return <button className={[styles.btn, styles.btnMain].join(' ')} disabled>Mint Locked</button>
+            } else if (connected) {
                 return <button className={[styles.btn, styles.btnMain].join(' ')} onClick={claimToken} >Mint {keysAmount} {buttonText()}</button>
             } else {
                 return <button className={[styles.btn, styles.btnMain].join(' ')} onClick={connect} >Connect Wallet</button>
@@ -158,8 +157,8 @@ export default function Home() {
             let web3: any = new Web3(String('https://mainnet.infura.io/v3/'+process.env.NEXT_PUBLIC_INFURA));
             let Contract = new web3.eth.Contract(TuringKey.abi, contractAddress);
             let chain = await web3.eth.getChainId();
-            let _totalMinted = await Contract.methods.tokenCount().call();
-            let _currentSupply = await Contract.methods.currentSupply().call();
+            let _totalMinted = parseInt(await Contract.methods.tokenCount().call());
+            let _currentSupply = parseInt(await Contract.methods.currentSupply().call());
 
             let accounts = await web3.eth.getAccounts();
             if (accounts.length != 0) {
