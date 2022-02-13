@@ -132,9 +132,10 @@ export default function Home() {
         };
 
         let buttonHTML = () => {
-            if (mintLocked) {
-                return <button className={[styles.btn, styles.btnMain].join(' ')} disabled>Mint Locked</button>
-            } else if (connected) {
+            //if (mintLocked) {
+                // return <button className={[styles.btn, styles.btnMain].join(' ')} disabled>Mint Locked</button>
+            // }
+           if (connected) {
                 return <button className={[styles.btn, styles.btnMain].join(' ')} onClick={claimToken} >Mint {keysAmount} {buttonText()}</button>
             } else {
                 return <button className={[styles.btn, styles.btnMain].join(' ')} onClick={connect} >Connect Wallet</button>
