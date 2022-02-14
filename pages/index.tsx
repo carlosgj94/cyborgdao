@@ -78,7 +78,6 @@ export default function Home() {
                 let web3: any = new Web3(provider);
                 let chain = await web3.eth.getChainId();
                 let Contract = new web3.eth.Contract(TuringKey.abi, contractAddress);
-                console.log("Connected?")
 
                 let accounts = await web3.eth.getAccounts()
                 let accountBalance = await Contract.methods.balanceOf(accounts[0]).call();
@@ -197,7 +196,7 @@ export default function Home() {
                             <Image src={nftImage} width='600' height='600' layout='responsive' className={styles.nftimage} alt="NFT image" />
                         </div>
                         <div className={styles.mintInfo}>
-                            {totalMinted}/{currentSupply} | 0.5 ETH
+                            Minted: {totalMinted}/{currentSupply} | 0.5 ETH
                         </div>
                         {mintButton()}
                     </div>
