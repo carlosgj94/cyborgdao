@@ -166,7 +166,7 @@ export default function Home() {
             }
 
             setConnection(accounts[0], chain);
-            setTotalMinted(_totalMinted);
+            setTotalMinted(_totalMinted+1);
             setCurrentSupply(_currentSupply);
 
             if (_totalMinted >= _currentSupply) {
