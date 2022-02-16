@@ -156,8 +156,8 @@ export default function Home() {
             let web3: any = new Web3(String('https://mainnet.infura.io/v3/'+process.env.NEXT_PUBLIC_INFURA));
             let Contract = new web3.eth.Contract(TuringKey.abi, contractAddress);
             let chain = await web3.eth.getChainId();
-            let _totalMinted = parseInt(await Contract.methods.tokenCount().call()) + 1;
-            let _currentSupply = parseInt(await Contract.methods.currentSupply().call());
+            let _totalMinted = parseInt(await Contract.methods.tokenCount().call());
+            let _currentSupply = parseInt(await Contract.methods.currentSupply().call()) - 1;
 
             let accounts = await web3.eth.getAccounts();
             if (accounts.length != 0) {
