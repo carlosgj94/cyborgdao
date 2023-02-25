@@ -153,17 +153,23 @@ export default function Home() {
 
     useEffect(() => {
         let mintStatus = async () => {
-            let web3: any = new Web3(String('https://mainnet.infura.io/v3/'+process.env.NEXT_PUBLIC_INFURA));
-            let Contract = new web3.eth.Contract(TuringKey.abi, contractAddress);
+            // let web3: any = new Web3(String('https://mainnet.infura.io/v3/'+process.env.NEXT_PUBLIC_INFURA));
+            let web3: any = new Web3(String('https://goerli.infura.io/v3/'+process.env.NEXT_PUBLIC_INFURA));
             let chain = await web3.eth.getChainId();
+            console.log('Contract Address', contractAddress)
+            console.log('ChainID: ', chainId)
+            let Contract = new web3.eth.Contract(TuringKey.abi, contractAddress);
             let _totalMinted = parseInt(await Contract.methods.tokenCount().call());
-            let _currentSupply = parseInt(await Contract.methods.currentSupply().call()) - 1;
+            let _currentSupply = parseInt(await Contract.methods.currentSupply().call());
 
             let accounts = await web3.eth.getAccounts();
             if (accounts.length != 0) {
                 let accountBalance = await Contract.methods.balanceOf(accounts[0]).call();
                 setBalance(accountBalance);
             }
+
+            console.log('Total Minted: ', _totalMinted)
+            console.log('Total Minted: ', _currentSupply)
 
             setConnection(accounts[0], chain);
             setTotalMinted(_totalMinted);

@@ -6,8 +6,15 @@ import '@rari-capital/solmate/src/tokens/ERC721.sol';
 import {IERC20} from "./interfaces/IERC20.sol";
 import {IBottoStaking} from "./interfaces/IBottoStaking.sol";
 
+
+/// @notice Timelock period has not started
+error MintHasNotStarted(address user);
+
 /// @notice Too few tokens remain
 error InsufficientTokensRemain();
+
+/// @notice User doesn't meet the requirements
+error UserCantMint(address user);
 
 /// @notice Balance of sender is or would be over token limit per holder
 // @param balance Token balance
@@ -62,6 +69,15 @@ contract TuringKey is ERC721, Ownable {
     /// @notice Cost to mint a token
     uint256 public publicSalePrice = 0.5 ether;
 
+    /// @notice Address where the payments will be directed to
+    address public paymentRecipient;
+
+    /// @notice Turing Key v1 NFT
+    ERC721 public turingKeyV1;
+
+    /// @notice BrainDrops NFT
+    ERC721 public brainDrops;
+
     //////////////////////////////////////////////////
     //                  MODIFIER                    //
     //////////////////////////////////////////////////
@@ -72,21 +88,48 @@ contract TuringKey is ERC721, Ownable {
     /// -> Balance of target address in limits
     /// -> Value sended matches price
     modifier canMint(address to, uint8 amount) {
+        // TODO: Current Turing Key Holders
         if (block.timestamp < timelock) {
-            if(bottoStaking.userStakes(msg.sender) == 0 || bottoStaking.userStakes(to) == 0) {
-                revert UserIsNotAStaker(msg.sender);
-            }
+            revert MintHasNotStarted(msg.sender);
         }
+
         if (tokenCount + amount >= currentSupply) {
             revert InsufficientTokensRemain();
         }
-        if (balanceOf[to] + amount > HOLDER_TOKEN_LIMIT) {
-            revert SenderBalanceOverTokenLimit(balanceOf[to] + amount, HOLDER_TOKEN_LIMIT);
+        if (balanceOf(to) + amount > HOLDER_TOKEN_LIMIT) {
+            revert SenderBalanceOverTokenLimit(balanceOf(to) + amount, HOLDER_TOKEN_LIMIT);
         }
         if (publicSalePrice * amount > msg.value) {
             revert InsufficientFunds(publicSalePrice * amount, msg.value);
         }
-        _;
+
+        if (block.timestamp > timelock + 6 days) {
+            _;
+            return;
+        }
+
+        // Checking is a Turing Key holder
+        if (turingKeyV1.balanceOf(msg.sender) != 0) {
+            _;
+            return;
+        }
+
+        // Checking if user is a Botto Staker
+        // TODO: Timelock fix
+        if (block.timestamp > timelock + 2 days) {
+            if(bottoStaking.userStakes(msg.sender) > 0 || bottoStaking.userStakes(to) > 0) {
+                _;
+                return;
+            }
+        }
+
+        // TODO: BrainDrops holders 
+        if (block.timestamp > timelock + 4 days && brainDrops.balanceOf(msg.sender) == 0) {
+            _;
+            return;
+        }
+
+        revert UserCantMint(msg.sender);
     }
 
     //////////////////////////////////////////////////
@@ -94,10 +137,22 @@ contract TuringKey is ERC721, Ownable {
     //////////////////////////////////////////////////
 
     /// @dev Sets the ERC721 Metadata and OpenSea Proxy Registry Address
-    constructor(string memory _tokenURI, IBottoStaking _bottoStaking) ERC721("Turing Key", "TKEY") {
+    constructor(
+        string memory _tokenURI, 
+        IBottoStaking _bottoStaking, 
+        ERC721 _turingKey,
+        ERC721 _brainDrops,
+        address _recipient,
+        uint256 _mintStart
+    ) ERC721("Turing Key", "TKEY") {
       internalTokenURI = _tokenURI;
       bottoStaking = _bottoStaking;
-      timelock = block.timestamp + 2 days;
+      turingKeyV1 = _turingKey;
+      brainDrops = _brainDrops;
+      paymentRecipient = _recipient;
+
+      // Timelock used to be +2, needs to be changed in the frontend
+      timelock = block.timestamp + _mintStart;
     }
 
     //////////////////////////////////////////////////
@@ -128,6 +183,7 @@ contract TuringKey is ERC721, Ownable {
         payable
         canMint(to, amount) 
     {
+        (bool sent, bytes memory data) = paymentRecipient.call{value: msg.value}("");
         for (uint8 i=0; i < amount; i++) {
             tokenCount++;
             _mint(to, tokenCount);
@@ -143,6 +199,7 @@ contract TuringKey is ERC721, Ownable {
         payable
         canMint(to, amount)
     {
+        (bool sent, bytes memory data) = paymentRecipient.call{value: msg.value}("");
         for (uint8 i=0; i < amount; i++) {
             tokenCount++;
             _safeMint(to, tokenCount);
@@ -162,6 +219,7 @@ contract TuringKey is ERC721, Ownable {
         payable
         canMint(to, amount)
     {
+        (bool sent, bytes memory data) = paymentRecipient.call{value: msg.value}("");
         for (uint8 i=0; i < amount; i++) {
             tokenCount++;
             _safeMint(to, tokenCount, data);
