@@ -152,7 +152,7 @@ contract TuringKey is ERC721, Ownable {
       paymentRecipient = _recipient;
 
       // Timelock used to be +2, needs to be changed in the frontend
-      timelock = _mintStart;
+      timelock = block.timestamp + _mintStart;
     }
 
     //////////////////////////////////////////////////
