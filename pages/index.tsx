@@ -28,7 +28,7 @@ export default function Home() {
     let [claiming, setClaiming] = useState(false);
     let [mintLocked, setMintLocked] = useState(false);
     let [totalMinted, setTotalMinted] = useState(0);
-    let [currentSupply, setCurrentSupply] = useState(969);
+    let [currentSupply, setCurrentSupply] = useState(201);
     let [keysAmount, setKeysNumber] = useState(1);
 
     let web3Modal: any;
@@ -153,8 +153,7 @@ export default function Home() {
 
     useEffect(() => {
         let mintStatus = async () => {
-            // let web3: any = new Web3(String('https://mainnet.infura.io/v3/'+process.env.NEXT_PUBLIC_INFURA));
-            let web3: any = new Web3(String('https://goerli.infura.io/v3/'+process.env.NEXT_PUBLIC_INFURA));
+            let web3: any = new Web3(String('https://mainnet.infura.io/v3/'+process.env.NEXT_PUBLIC_INFURA));
             let chain = await web3.eth.getChainId();
             console.log('Contract Address', contractAddress)
             console.log('ChainID: ', chainId)
@@ -202,7 +201,7 @@ export default function Home() {
                             <Image src={nftImage} width='600' height='600' layout='responsive' className={styles.nftimage} alt="NFT image" />
                         </div>
                         <div className={styles.mintInfo}>
-                            Minted: {totalMinted}/{currentSupply} | 0.5 ETH
+                            Minted: {totalMinted}/{currentSupply} | 1 ETH
                         </div>
                         {mintButton()}
                     </div>
